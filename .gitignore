@@ -1,0 +1,33 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+__pycache__/
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+.next/
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.coverage
+
+# Claude Code session artifacts (the harness itself stays in git, sessions do not)
+.claude/sessions/
