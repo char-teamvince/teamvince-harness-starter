@@ -10,15 +10,15 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 .
 ├── AGENTS.md              # Open-standard spec, any agent reads it (Cursor, Codex, Claude)
 ├── CLAUDE.md              # Claude-specific behavior on top of AGENTS.md
+├── LICENSE                # MIT
 ├── .env.example           # Template for your secrets, never commit the real .env
 ├── .gitignore             # Keeps .env out of git
 ├── .claude/
 │   ├── commands/
-│   │   ├── ship.md        # /ship, lint and deploy in sequence
+│   │   ├── scope.md       # /scope, run an idea through the scope filter
 │   │   ├── diff-review.md # /diff-review, plain-English diff explanation
 │   │   ├── verify.md      # /verify, three-check verification before merge
-│   │   ├── scope.md       # /scope, run an idea through the scope filter
-│   │   └── loom-prep.md   # /loom-prep, generate the 60-second mid-cohort demo script
+│   │   └── ship.md        # /ship, lint and deploy in sequence
 │   └── skills/
 │       └── README.md      # Where Skills go, plus the install pattern
 └── README.md              # This file
@@ -27,11 +27,11 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 ## Quick start (10 minutes)
 
 1. **Clone or download this repo.**
-2. **Open `AGENTS.md`.** Fill in the seven sections (project name, lane, what it does, who it is for, what it does NOT do, definition of done, working rules). Save.
-3. **Open `CLAUDE.md`.** Fill in the Claude-specific working rules block. Save.
-4. **Copy `.env.example` to `.env`.** Add your API keys. Confirm `.env` is in `.gitignore` (it is).
-5. **Open the project in Claude Code.** Run `/init` or just start a session. Claude reads both spec files automatically.
-6. **Try the slash commands.** Type `/scope` and paste your idea. Type `/diff-review` after a generated change. The commands are markdown files you can edit any time.
+2. **Open the project in Claude Code.**
+3. **Run `/scope`** and paste your idea. If green light, Claude generates a draft `AGENTS.md` (sections 1-6) ready to commit. If cut-to-wedge, ship the smaller version of the same idea. If different idea needed, pick another and run `/scope` again.
+4. **Open `CLAUDE.md`.** Fill in the "Project-specific overrides" block at the bottom. Save.
+5. **Copy `.env.example` to `.env`.** Add your API keys. `.env` is already gitignored.
+6. **Start the loop.** `/diff-review` after each change, `/verify` when packages or APIs are involved, `/ship` when ready to deploy.
 
 ## The working loop
 
@@ -51,6 +51,8 @@ Once the harness is in place, the loop is:
 `AGENTS.md` is the open standard stewarded by the Linux Foundation's Agentic AI Foundation (December 2025). It is read by Cursor, Codex, Copilot, Windsurf, Gemini CLI, and Claude Code. Sixty-thousand-plus projects use it.
 
 `CLAUDE.md` adds Claude-specific behavior on top of AGENTS.md (model picks, plan-mode preferences, safety preferences).
+
+Claude Code loads `CLAUDE.md` automatically. The starter's `CLAUDE.md` tells Claude to read `AGENTS.md` first, so keep both files at the repo root. The spec stays portable across Cursor, Codex, and other agents that read AGENTS.md natively.
 
 When a better agent ships in six months, your spec moves with you. The asset is the harness, not any single model.
 
