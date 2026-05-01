@@ -9,6 +9,7 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 ```
 .
 ├── AGENTS.md              # Open-standard spec, any agent reads it (Cursor, Codex, Claude)
+├── AGENTS.example.md      # A filled-in example spec to copy from
 ├── CLAUDE.md              # Claude-specific behavior on top of AGENTS.md
 ├── LICENSE                # MIT
 ├── .env.example           # Template for your secrets, never commit the real .env
@@ -26,12 +27,14 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 
 ## Quick start (10 minutes)
 
-1. **Clone or download this repo.**
+1. **Get the harness.** Run `npx degit char-teamvince/teamvince-harness-starter my-project && cd my-project` for a clean copy without git history. Or `git clone` and `rm -rf .git` if you prefer.
 2. **Open the project in Claude Code.**
 3. **Run `/scope`** and paste your idea. If green light, Claude generates a draft `AGENTS.md` (sections 1-6) ready to commit. If cut-to-wedge, ship the smaller version of the same idea. If different idea needed, pick another and run `/scope` again.
 4. **Open `CLAUDE.md`.** Fill in the "Project-specific overrides" block at the bottom. Save.
 5. **Copy `.env.example` to `.env`.** Add your API keys. `.env` is already gitignored.
 6. **Start the loop.** `/diff-review` after each change, `/verify` when packages or APIs are involved, `/ship` when ready to deploy.
+
+Stuck on what a filled-in spec looks like? Read `AGENTS.example.md` for a complete worked example.
 
 ## The working loop
 
@@ -62,6 +65,20 @@ When a better agent ships in six months, your spec moves with you. The asset is 
 - Not a tutorial. The course is the tutorial.
 - Not opinionated on tech stack. Use whatever ships.
 - Not auth, payments, multi-user, or native mobile. Those are v2 patches that land in one afternoon each (Clerk, Stripe Checkout, Supabase, Expo).
+
+## Troubleshooting
+
+**`/scope` and the other slash commands don't appear in Claude Code.**
+Claude Code reads `.claude/commands/` at session start. Restart the session and confirm the folder is at the repo root, not nested in a subfolder.
+
+**Claude isn't following AGENTS.md.**
+Claude Code loads `CLAUDE.md` automatically; `AGENTS.md` is loaded because `CLAUDE.md` instructs Claude to read it. Confirm both files are at the repo root and that the top of `CLAUDE.md` still contains the "Read AGENTS.md first" instruction.
+
+**My idea keeps failing `/scope`.**
+That's the filter doing its job. Run `/scope` on the smaller wedge it suggests, not the original idea. The point is to ship something, not to defend the version you walked in with.
+
+**Using Python or any non-Node stack.**
+`/ship` assumes Node and Vercel for lint, build, and deploy. Edit `.claude/commands/ship.md` (it's plain markdown) and replace those steps with your stack's equivalents. `/verify` and `/diff-review` are stack-agnostic and work regardless of language.
 
 ## Want to go deeper
 
