@@ -19,7 +19,8 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 │   │   ├── scope.md       # /scope, run an idea through the scope filter
 │   │   ├── diff-review.md # /diff-review, plain-English diff explanation
 │   │   ├── verify.md      # /verify, three-check verification before merge
-│   │   └── ship.md        # /ship, lint and deploy in sequence
+│   │   ├── ship.md        # /ship, lint and deploy in sequence
+│   │   └── share.md       # /share, share-ready copy for what you built
 │   └── skills/
 │       └── README.md      # Where Skills go, plus the install pattern
 └── README.md              # This file
@@ -29,10 +30,10 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 
 1. **Get the harness.** Run `npx degit char-teamvince/teamvince-harness-starter my-project && cd my-project` for a clean copy without git history. Or `git clone` and `rm -rf .git` if you prefer.
 2. **Open the project in Claude Code.**
-3. **Run `/scope`** and paste your idea. If green light, Claude generates a draft `AGENTS.md` (sections 1-6) ready to commit. If cut-to-wedge, ship the smaller version of the same idea. If different idea needed, pick another and run `/scope` again.
+3. **Run `/scope`** and paste your idea. If green light, Claude generates a draft `AGENTS.md` (sections 1-6) ready to commit. If cut-to-wedge, ship the smaller version of the same idea. If different idea needed, `/scope` will offer three smaller alternatives. Pick one and run `/scope` again.
 4. **Open `CLAUDE.md`.** Fill in the "Project-specific overrides" block at the bottom. Save.
 5. **Copy `.env.example` to `.env`.** Add your API keys. `.env` is already gitignored.
-6. **Start the loop.** `/diff-review` after each change, `/verify` when packages or APIs are involved, `/ship` when ready to deploy.
+6. **Start the loop.** `/diff-review` after each change, `/verify` when packages or APIs are involved, `/ship` when ready to deploy, and `/share` when you want to tell someone what you built.
 
 Stuck on what a filled-in spec looks like? Read `AGENTS.example.md` for a complete worked example.
 
@@ -75,10 +76,10 @@ Claude Code reads `.claude/commands/` at session start. Restart the session and 
 Claude Code loads `CLAUDE.md` automatically; `AGENTS.md` is loaded because `CLAUDE.md` instructs Claude to read it. Confirm both files are at the repo root and that the top of `CLAUDE.md` still contains the "Read AGENTS.md first" instruction.
 
 **My idea keeps failing `/scope`.**
-That's the filter doing its job. Run `/scope` on the smaller wedge it suggests, not the original idea. The point is to ship something, not to defend the version you walked in with.
+That's the filter doing its job. If 1-2 questions failed, ship the wedge `/scope` named. If 3+ failed, `/scope` will generate three smaller alternative ideas. Pick one and run `/scope` on it.
 
 **Using Python or any non-Node stack.**
-`/ship` assumes Node and Vercel for lint, build, and deploy. Edit `.claude/commands/ship.md` (it's plain markdown) and replace those steps with your stack's equivalents. `/verify` and `/diff-review` are stack-agnostic and work regardless of language.
+`/ship` auto-detects the stack and asks for your lint, build, and deploy commands the first time. Save the answers in the "Project-specific overrides" block at the bottom of `CLAUDE.md` so future ship runs do not re-ask. `/verify` and `/diff-review` are stack-agnostic and work regardless of language.
 
 ## Want to go deeper
 
