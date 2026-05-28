@@ -1,4 +1,4 @@
-# Secrets — never commit
+# Secrets, never commit
 .env
 .env.local
 .env.*.local
@@ -31,3 +31,6 @@ coverage/
 
 # Claude Code session artifacts (the harness itself stays in git, sessions do not)
 .claude/sessions/
+
+# Personal permission overrides stay local; the shared allowlist is settings.json
+.claude/settings.local.json

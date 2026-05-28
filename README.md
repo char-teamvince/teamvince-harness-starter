@@ -10,19 +10,28 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 .
 ├── AGENTS.md              # Open-standard spec, any agent reads it (Cursor, Codex, Claude)
 ├── AGENTS.example.md      # A filled-in example spec to copy from
-├── CLAUDE.md              # Claude-specific behavior on top of AGENTS.md
+├── CLAUDE.md              # Claude-specific picks, imports @AGENTS.md
 ├── LICENSE                # MIT
 ├── .env.example           # Template for your secrets, never commit the real .env
 ├── .gitignore             # Keeps .env out of git
 ├── .claude/
+│   ├── settings.json      # Permission allowlist + the pre-push secret-scan hook
 │   ├── commands/
 │   │   ├── scope.md       # /scope, run an idea through the scope filter
 │   │   ├── diff-review.md # /diff-review, plain-English diff explanation
-│   │   ├── verify.md      # /verify, three-check verification before merge
+│   │   ├── verify.md      # /verify, four-check verification before merge
 │   │   ├── ship.md        # /ship, lint and deploy in sequence
 │   │   └── share.md       # /share, share-ready copy for what you built
-│   └── skills/
-│       └── README.md      # Where Skills go, plus the install pattern
+│   ├── skills/
+│   │   ├── README.md      # How Skills work, plus the install pattern
+│   │   ├── voice/         # teamvince writing rules
+│   │   ├── sparring-partner/  # red-team an idea before you build it
+│   │   └── security/      # lethal-trifecta review
+│   ├── agents/
+│   │   └── explorer.md    # read-only investigator subagent
+│   └── hooks/
+│       └── check-secrets.sh   # blocks a push that contains a key
+├── evals/                 # Optional LLM-graded eval (advanced, skip for v1)
 └── README.md              # This file
 ```
 
@@ -42,7 +51,7 @@ Stuck on what a filled-in spec looks like? Read `AGENTS.example.md` for a comple
 Once the harness is in place, the loop is:
 
 1. Think of one change.
-2. Press Shift+Tab twice to enter plan mode (Opus 4.7 recommended for planning).
+2. Press Shift+Tab twice to enter plan mode (Opus 4.8 recommended for planning).
 3. Type the change. Read the plan. Fix it if needed.
 4. Press Shift+Tab once to switch to implementation (Sonnet 4.6 recommended for execution).
 5. Run `/diff-review` to get a plain-English explanation of what changed.
@@ -56,9 +65,34 @@ Once the harness is in place, the loop is:
 
 `CLAUDE.md` adds Claude-specific behavior on top of AGENTS.md (model picks, plan-mode preferences, safety preferences).
 
-Claude Code loads `CLAUDE.md` automatically. The starter's `CLAUDE.md` tells Claude to read `AGENTS.md` first, so keep both files at the repo root. The spec stays portable across Cursor, Codex, and other agents that read AGENTS.md natively.
+Claude Code loads `CLAUDE.md` automatically. The starter's `CLAUDE.md` imports `AGENTS.md` with an `@AGENTS.md` line at the top, so keep both files at the repo root. The spec stays portable across Cursor, Codex, and other agents that read AGENTS.md natively.
 
 When a better agent ships in six months, your spec moves with you. The asset is the harness, not any single model.
+
+## Starter Skills
+
+Skills are where your context compounds. CLAUDE.md does not travel between projects. A Skill does. This starter ships three, in `.claude/skills/`:
+
+- `voice` loads when you generate copy the user will publish.
+- `sparring-partner` loads when you want an idea, a plan, or a draft pressure-tested before you build.
+- `security` loads when you wire untrusted input into tools.
+
+Only the name and description of each Skill sit in context until one triggers, so a large Skill library is close to free. When you catch yourself running the same prompt twice a week, make it a Skill and add it to the index in `CLAUDE.md`. More in `.claude/skills/README.md`.
+
+## Security: the lethal trifecta
+
+A flow turns dangerous when it has all three of these at once: access to private data, exposure to untrusted content (web pages, files, API responses, pasted text), and a way to send data outward. An attacker who controls the untrusted content can then read your data and ship it out. Keep at least one of the three out of any unattended flow. `/verify` checks for this, the `security` skill walks through the fix, and section 8 of `AGENTS.md` states the rule in one place.
+
+## Permissions and safety
+
+`.claude/settings.json` ships a conservative permission allowlist: safe, read-only commands run without a prompt, and anything that pushes, installs, deletes, or hits the network still asks first. It also wires a pre-push hook (`.claude/hooks/check-secrets.sh`) that blocks a `git push` when it spots a key or a tracked `.env`. Personal tweaks go in `.claude/settings.local.json`, which is gitignored. Widen the allowlist as you learn which commands you trust.
+
+## Optional: the advanced pieces
+
+Two pieces wait here for when you outgrow v1. Ignore them until then.
+
+- `.claude/agents/explorer.md` is a read-only subagent. Hand it a wide "where is X" search so the file dumps land in its context, not yours.
+- `evals/` is a single LLM-graded check that scores output against your spec. Reach for it once your project has a clear notion of good output. See `evals/README.md`.
 
 ## What this is NOT
 
@@ -73,7 +107,10 @@ When a better agent ships in six months, your spec moves with you. The asset is 
 Claude Code reads `.claude/commands/` at session start. Restart the session and confirm the folder is at the repo root, not nested in a subfolder.
 
 **Claude isn't following AGENTS.md.**
-Claude Code loads `CLAUDE.md` automatically; `AGENTS.md` is loaded because `CLAUDE.md` instructs Claude to read it. Confirm both files are at the repo root and that the top of `CLAUDE.md` still contains the "Read AGENTS.md first" instruction.
+Claude Code loads `CLAUDE.md` automatically; `AGENTS.md` is loaded because `CLAUDE.md` imports it with `@AGENTS.md`. Confirm both files are at the repo root and that the top of `CLAUDE.md` still has the `@AGENTS.md` import line.
+
+**Output feels worse than yesterday.**
+Update Claude Code and check `github.com/anthropics/claude-code/issues` before assuming user error. Regressions happen and get logged. Keeping the tool current is the cheapest fix.
 
 **My idea keeps failing `/scope`.**
 That's the filter doing its job. If 1-2 questions failed, ship the wedge `/scope` named. If 3+ failed, `/scope` will generate three smaller alternative ideas. Pick one and run `/scope` on it.
