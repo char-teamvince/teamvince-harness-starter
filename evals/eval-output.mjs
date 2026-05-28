@@ -43,7 +43,9 @@ try {
 const client = new Anthropic({ apiKey })
 
 // The project spec is the rubric. It holds the definition of done and any
-// voice or style rules. The system prompt is stable, so it benefits from caching.
+// voice or style rules. The system prompt is stable, so it is marked for caching;
+// the cache only kicks in once your spec is large (a few thousand tokens), so a
+// small starter spec will not cache yet.
 let spec = ''
 try {
   spec = await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8')
