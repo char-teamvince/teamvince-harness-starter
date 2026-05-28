@@ -1,0 +1,12 @@
+{
+  "name": "teamvince-harness-evals",
+  "private": true,
+  "type": "module",
+  "description": "Optional LLM-graded eval for the harness. Run it when your project has a notion of good output.",
+  "scripts": {
+    "eval": "node eval-output.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  }
+}

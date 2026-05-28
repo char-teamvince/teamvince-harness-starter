@@ -1,8 +1,8 @@
 ---
-description: "Three-check verification before merging code that touches packages or APIs. Run on every Lane 3 change."
+description: "Four-check verification before merging code that touches packages, APIs, or untrusted input. Run on every change that adds a dependency or pulls in outside content."
 ---
 
-You are verifying that the latest code changes do not introduce hallucinated packages or invented API endpoints. Run all three checks and report results.
+You are verifying that the latest code changes do not introduce hallucinated packages, invented API endpoints, or an unsafe data flow. Run all four checks and report results.
 
 **Check 1: Package check.**
 For every new line in the diff that adds an import or a `pip install` / `npm install` command:
@@ -22,9 +22,15 @@ For every new fetch, axios call, or HTTP request in the diff:
 - Compare the output shape to what the code expects.
 - If output looks plausible but the wrong shape, do not assume the model knows the schema. Ask Claude: "Show me the raw response from this API for input X. Do not summarize."
 
+**Check 4: Untrusted-content check.**
+If the change pulls in content the user did not write (web pages, files, emails, API responses, pasted text) and then acts on it or passes it to another tool:
+- Confirm the content is treated as data, not as instructions. It must not be able to choose which tool runs or what gets sent.
+- Check for the lethal trifecta: private-data access, untrusted content, and a way to send data outward, all in one flow. If all three are present, flag it and break one leg before merging (see the `security` skill).
+
 Report:
 - Packages checked, status of each
 - Endpoints checked, status of each
 - Behavior check: passed / failed, with the test input and actual output
+- Untrusted content: present or not. If present, is it confined to data, and is the trifecta avoided?
 
 If any check fails, do not merge. Surface the failure clearly. Propose the smallest fix.
