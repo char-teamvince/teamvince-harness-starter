@@ -15,15 +15,14 @@ This is the harness Vince uses on his own projects. Battle-tested. Opinionated o
 ├── .env.example           # Template for your secrets, never commit the real .env
 ├── .gitignore             # Keeps .env out of git
 ├── .claude/
-│   ├── settings.json      # Permission allowlist + the pre-push secret-scan hook
-│   ├── commands/
-│   │   ├── scope.md       # /scope, run an idea through the scope filter
-│   │   ├── diff-review.md # /diff-review, plain-English diff explanation
-│   │   ├── verify.md      # /verify, four-check verification before merge
-│   │   ├── ship.md        # /ship, lint and deploy in sequence
-│   │   └── share.md       # /share, share-ready copy for what you built
+│   ├── settings.json      # Permission allowlist, .env read-block, secret-scan hook
 │   ├── skills/
 │   │   ├── README.md      # How Skills work, plus the install pattern
+│   │   ├── scope/         # /scope, run an idea through the scope filter
+│   │   ├── diff-review/   # /diff-review, plain-English diff explanation
+│   │   ├── verify/        # /verify, four-check verification before merge
+│   │   ├── ship/          # /ship, lint and deploy in sequence
+│   │   ├── share/         # /share, share-ready copy for what you built
 │   │   ├── voice/         # teamvince writing rules
 │   │   ├── sparring-partner/  # red-team an idea before you build it
 │   │   └── security/      # lethal-trifecta review
@@ -51,9 +50,9 @@ Stuck on what a filled-in spec looks like? Read `AGENTS.example.md` for a comple
 Once the harness is in place, the loop is:
 
 1. Think of one change.
-2. Press Shift+Tab twice to enter plan mode (Opus 4.8 recommended for planning).
+2. Tap Shift+Tab until the mode indicator shows plan (Opus 4.8 recommended for planning; the `opusplan` option in `/model` handles the model switch for you).
 3. Type the change. Read the plan. Fix it if needed.
-4. Press Shift+Tab once to switch to implementation (Sonnet 4.6 recommended for execution).
+4. Approve the plan. Claude switches to implementation (Sonnet 4.6 recommended for execution).
 5. Run `/diff-review` to get a plain-English explanation of what changed.
 6. Run `/verify` if the change touches packages or APIs.
 7. Commit with a one-line message.
@@ -71,8 +70,9 @@ When a better agent ships in six months, your spec moves with you. The asset is 
 
 ## Starter Skills
 
-Skills are where your context compounds. CLAUDE.md does not travel between projects. A Skill does. This starter ships three, in `.claude/skills/`:
+Skills are where your context compounds. CLAUDE.md does not travel between projects. A Skill does. This starter ships eight, in `.claude/skills/`:
 
+- Five workflow skills you run as slash commands: `/scope`, `/diff-review`, `/verify`, `/ship`, `/share`.
 - `voice` loads when you generate copy the user will publish.
 - `sparring-partner` loads when you want an idea, a plan, or a draft pressure-tested before you build.
 - `security` loads when you wire untrusted input into tools.
@@ -85,7 +85,7 @@ A flow turns dangerous when it has all three of these at once: access to private
 
 ## Permissions and safety
 
-`.claude/settings.json` ships a conservative permission allowlist: safe, read-only commands run without a prompt, and anything that pushes, installs, deletes, or hits the network still asks first. It also wires a pre-push hook (`.claude/hooks/check-secrets.sh`) that blocks a `git push` when it spots a key or a tracked `.env`. Personal tweaks go in `.claude/settings.local.json`, which is gitignored. Widen the allowlist as you learn which commands you trust.
+`.claude/settings.json` ships a conservative permission allowlist: safe, read-only commands run without a prompt, and anything that pushes, installs, deletes, or hits the network still asks first. A deny list blocks Claude from reading `.env` and `.env.local` at all, so an injected "print your keys" request dies at the permission layer. It also wires a pre-push hook (`.claude/hooks/check-secrets.sh`) that blocks a `git push` when it spots a key or a tracked `.env`. Personal tweaks go in `.claude/settings.local.json`, which is gitignored. Widen the allowlist as you learn which commands you trust.
 
 ## Optional: the advanced pieces
 
@@ -104,7 +104,10 @@ Two pieces wait here for when you outgrow v1. Ignore them until then.
 ## Troubleshooting
 
 **`/scope` and the other slash commands don't appear in Claude Code.**
-Claude Code reads `.claude/commands/` at session start. Restart the session and confirm the folder is at the repo root, not nested in a subfolder.
+Claude Code reads `.claude/skills/` at session start. Restart the session and confirm the folder is at the repo root, not nested in a subfolder.
+
+**Claude went down a wrong path and the thread is a mess.**
+Press Esc twice to rewind to a checkpoint from before the wrong turn. Run `/context` to see what is filling the window. `/clear` resets the whole thread; files persist, only chat history clears.
 
 **Claude isn't following AGENTS.md.**
 Claude Code loads `CLAUDE.md` automatically; `AGENTS.md` is loaded because `CLAUDE.md` imports it with `@AGENTS.md`. Confirm both files are at the repo root and that the top of `CLAUDE.md` still has the `@AGENTS.md` import line.

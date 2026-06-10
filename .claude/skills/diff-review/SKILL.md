@@ -1,4 +1,5 @@
 ---
+name: diff-review
 description: "Plain-English explanation of the current diff. Run before every commit."
 ---
 

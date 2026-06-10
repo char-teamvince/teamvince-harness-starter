@@ -1,4 +1,5 @@
 ---
+name: verify
 description: "Four-check verification before merging code that touches packages, APIs, or untrusted input. Run on every change that adds a dependency or pulls in outside content."
 ---
 

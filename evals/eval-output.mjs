@@ -17,6 +17,7 @@ import process from 'node:process'
 
 const root = process.cwd()
 const apiKey = process.env.ANTHROPIC_API_KEY
+// Opus 4.8 is the cost-right grader. Set EVAL_MODEL=claude-fable-5 for the hardest rubrics.
 const model = process.env.EVAL_MODEL || 'claude-opus-4-8'
 const passThreshold = Number(process.env.EVAL_PASS_THRESHOLD || 4)
 

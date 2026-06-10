@@ -46,7 +46,7 @@ Three tiers: always, ask first, never.
 **Always**
 
 - Work one change at a time. One prompt, one goal.
-- Enter plan mode (Shift+Tab twice in Claude Code) before editing anything past a one-line change.
+- Enter plan mode (in Claude Code, tap Shift+Tab until the mode shows plan) before editing anything past a one-line change.
 - Commit after every working change with a one-line message.
 - Run the verify check for any code that imports a package, calls an API, or ingests outside content (see /verify command).
 - Surface errors loudly. Do not silently swallow them.
