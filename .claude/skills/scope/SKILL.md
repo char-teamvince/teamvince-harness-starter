@@ -1,4 +1,5 @@
 ---
+name: scope
 description: "Run a project idea through the teamvince scope filter. Use before starting any new build."
 ---
 

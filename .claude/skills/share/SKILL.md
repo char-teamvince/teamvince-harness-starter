@@ -1,4 +1,5 @@
 ---
+name: share
 description: "Generate share-ready copy for what you built: tweet, Loom outline, optional attribution. Use when v1 is live and you want to tell someone."
 ---
 

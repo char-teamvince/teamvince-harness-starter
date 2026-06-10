@@ -22,7 +22,7 @@ With no key set, the script prints a skip line and exits 0, so it stays safe in 
 
 ## Tunables
 
-- `EVAL_MODEL` (default `claude-opus-4-8`)
+- `EVAL_MODEL` (default `claude-opus-4-8`; set `claude-fable-5` when the rubric is genuinely hard and worth twice the price)
 - `EVAL_PASS_THRESHOLD` (default `4`; below this the script exits 1)
 
 ## Make it yours

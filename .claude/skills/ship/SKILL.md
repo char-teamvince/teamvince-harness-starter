@@ -1,5 +1,7 @@
 ---
+name: ship
 description: "Run lint, build, and deploy in sequence. Use when the working change is committed and ready to go live."
+disable-model-invocation: true
 ---
 
 You are running the ship sequence for this project.
